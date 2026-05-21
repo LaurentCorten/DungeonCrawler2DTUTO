@@ -7,13 +7,13 @@ public class PlayerMouvement : MonoBehaviour
     public Rigidbody2D rb2D;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
+    public float attackRange = 1.5f;
+    public int damage = 10;
 
     private Transform _transform;
 
-    [SerializeField]
-    InputPlayerMouvement _input;
-    [SerializeField]
-    private Vector2 _movement;
+    [SerializeField] InputPlayerMouvement _input;
+    [SerializeField] Vector2 _movement;
 
     private void Awake()
     {
@@ -68,19 +68,59 @@ public class PlayerMouvement : MonoBehaviour
         _transform.position += new Vector3(_movement.x,_movement.y,0) * moveSpeed;
     }
 
+    void PerformAttack()
+    {
+        // Active le trigger d'animation
+        animator.SetTrigger("Attack");
+
+        // Identifie si on attaque vers la gauche ou vers la droite
+        Vector2 attackDirection = spriteRenderer.flipX ? Vector2.left : Vector2.right;
+
+        // Chope tous les elements en contact
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, attackRange);
+
+        // Affine selection
+        foreach (Collider2D hitCollider in hitColliders)
+        {
+            // Spécifique au ennemis :
+            if (hitCollider.CompareTag("Enemy"))
+            {
+                // Identifie si l'enemmi est à gauche ou à droite
+                Vector2 directionToEnemy = (hitCollider.transform.position - transform.position).normalized;
+
+                // Compare les direction pour vérifier si l'ennemi est du bon côté
+                if (Vector2.Dot(attackDirection, directionToEnemy) > 0)
+                {
+                    // TODO: Retire de la vie à l'ennemi le cas échéant !
+                    Debug.Log("L'ennemi subit une attaque !");
+                }
+            }
+        }
+    }
+
+    // Bonus juste pour visualiser la portée d'attaque
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
+
+    #region Setup input listener
     private void InputListeningOn()
     {
         Debug.Log("Start InputSuscription");
         _input.Player.Move.performed += onMovePerformed;
         _input.Player.Move.canceled += onMoveCanceled;
+        _input.Player.Attack.performed += onAttackPerformed;
         Debug.Log("InputSuscription Finished");
     }
-
     private void InputListeningOff()
     {
         Debug.Log("Start InputUnsuscription");
         _input.Player.Move.performed -= onMovePerformed;
         _input.Player.Move.canceled -= onMoveCanceled;
+        _input.Player.Attack.performed -= onAttackPerformed;
         Debug.Log("InputUnsuscription Finished");
     }
 
@@ -96,6 +136,15 @@ public class PlayerMouvement : MonoBehaviour
         Debug.Log("Start onMoveCanceled");
         _movement = Vector2.zero;
         Debug.Log("Stop onMoveCanceled");
+    } 
+
+    private void onAttackPerformed(InputAction.CallbackContext context)
+    {
+        Debug.Log("Start onAttackPerformed");
+        PerformAttack();
+        Debug.Log("Stop onAttackPerformed");
     }
+
+    #endregion
 
 }
