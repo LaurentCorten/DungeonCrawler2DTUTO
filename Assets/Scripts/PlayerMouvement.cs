@@ -4,13 +4,15 @@ using UnityEngine.InputSystem;
 public class PlayerMouvement : MonoBehaviour
 {
     public float moveSpeed = 0.1f;
+    public float attackRange = 1.5f;
+    public int damage = 1;
+    public int knockbackForce = 5;
+
     public Rigidbody2D rb2D;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
-    public float attackRange = 1.5f;
-    public int damage = 10;
-
     private Transform _transform;
+    public PlayerHealth playerHealth;
 
     [SerializeField] InputPlayerMouvement _input;
     [SerializeField] Vector2 _movement;
@@ -91,8 +93,13 @@ public class PlayerMouvement : MonoBehaviour
                 // Compare les direction pour vérifier si l'ennemi est du bon côté
                 if (Vector2.Dot(attackDirection, directionToEnemy) > 0)
                 {
-                    // TODO: Retire de la vie à l'ennemi le cas échéant !
+                    // Retire de la vie à l'ennemi le cas échéant !
+                    EnemyAI enemyAI = hitCollider.GetComponent<EnemyAI>();
+                    enemyAI.TakeDamage(damage);
                     Debug.Log("L'ennemi subit une attaque !");
+
+                    Vector2 knockbackDirection = (hitCollider.transform.position - transform.position).normalized;
+                    enemyAI.rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
                 }
             }
         }
@@ -127,7 +134,10 @@ public class PlayerMouvement : MonoBehaviour
     private void onMovePerformed(InputAction.CallbackContext context)
     {
         Debug.Log("Start onMovePerformed");
-        _movement = context.ReadValue<Vector2>();
+        if (playerHealth.isAlive)
+        {
+            _movement = context.ReadValue<Vector2>(); 
+        }
         Debug.Log("Stop onMovePerformed");
     }
 
@@ -141,7 +151,10 @@ public class PlayerMouvement : MonoBehaviour
     private void onAttackPerformed(InputAction.CallbackContext context)
     {
         Debug.Log("Start onAttackPerformed");
-        PerformAttack();
+        if (playerHealth.isAlive)
+        {
+            PerformAttack(); 
+        }
         Debug.Log("Stop onAttackPerformed");
     }
 

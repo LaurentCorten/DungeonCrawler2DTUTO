@@ -12,8 +12,17 @@ public class EnemyAI : MonoBehaviour
     // Distance à laquelle l'ennemi considère qu'il a atteint un waypoint
     public float nextWpDistance = 1f;
 
+    // Gestion des attaques
+    public float attackCD = 2f;
+    float _currentCD;
+    public int enemyDmg = 1;
+    public int maxHealth = 2;
+    [SerializeField] private int _health;
+    private bool isAlive = true; 
+
     // Distance minimale pour déclencher une attaque (l'ennemi s'arrête en dehors de cette portée)
     public float attackRange = 1.5f;
+    public float detectionRange = 7f;
 
     // Chemin calculé par le Seeker
     public Path path;
@@ -31,9 +40,10 @@ public class EnemyAI : MonoBehaviour
     public Animator animator;
     public SpriteRenderer spriteRenderer;
 
-    // Gestion des attaques
-    public float attackCD = 2f;
-    float _currentCD;
+    private void Awake()
+    {
+        _health = maxHealth;
+    }
 
     // Méthode appelée au début de l'exécution
     void Start()
@@ -46,7 +56,7 @@ public class EnemyAI : MonoBehaviour
     void UpdatePath()
     {
         // Vérifie si le Seeker est prêt à calculer un nouveau chemin
-        if (seeker.IsDone())
+        if (isAlive && seeker.IsDone() && Vector2.Distance(transform.position, target.position) <= detectionRange)
             // Demande un nouveau chemin du Seeker entre la position actuelle et la cible
             seeker.StartPath(rb.position, target.position, OnPathComplete);
     }
@@ -65,6 +75,9 @@ public class EnemyAI : MonoBehaviour
     // Setup des animations
     private void Update()
     {
+        if (!isAlive) return;
+
+
         animator.SetFloat("Speed", rb.linearVelocity.sqrMagnitude);
 
         if (rb.linearVelocity.x != 0f)
@@ -81,7 +94,7 @@ public class EnemyAI : MonoBehaviour
     void FixedUpdate()
     {
         // Si aucun chemin n'a été calculé ou si tous les waypoints ont été atteints, ne fait rien
-        if (path == null || currWp >= path.vectorPath.Count)
+        if (path == null || currWp >= path.vectorPath.Count || !isAlive)
         {
             return;
         }
@@ -129,13 +142,34 @@ public class EnemyAI : MonoBehaviour
         _currentCD = attackCD;        
     }
 
+    // TODO : Problème 1 - il n'y a pas de detection de direction valide comme sur le hero => tape à 360°
+    // TODO : Problème 2 - reçevoir un coup reset bien le cd et applique le knockback mais, si l'enemy avait démarrer son coup, bien que l'animation soit intérrompue, les dégâts seront appliqués qd même si on est tjs en range après le timing de l'animation fantôme
     void EndOfAttack()
     {
         if(Vector2.Distance(transform.position, target.position) <= attackRange)
         {
-            // TODO: Retire des PV au player
+            // Retire des PV au player
+            target.GetComponent<PlayerHealth>().TakeDamage(enemyDmg);
             Debug.Log("Le Hero subit une attaque !");
             
+        }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        if (!isAlive) return;
+
+        _health -= dmg;
+
+        if (_health <= 0)
+        {
+            animator.SetTrigger("Die");
+            isAlive = false;
+            Destroy(gameObject, 3f);
+        } else
+        {
+            animator.SetTrigger("Hit");
+            _currentCD = attackCD;
         }
     }
 
@@ -144,6 +178,9 @@ public class EnemyAI : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 
 }
