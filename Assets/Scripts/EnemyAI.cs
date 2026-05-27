@@ -40,6 +40,8 @@ public class EnemyAI : MonoBehaviour
     public Animator animator;
     public SpriteRenderer spriteRenderer;
 
+    public GameObject coinPrefab;
+
     private void Awake()
     {
         _health = maxHealth;
@@ -165,6 +167,7 @@ public class EnemyAI : MonoBehaviour
         {
             animator.SetTrigger("Die");
             isAlive = false;
+            Instantiate(coinPrefab, transform.position, transform.rotation);
             Destroy(gameObject, 3f);
         } else
         {

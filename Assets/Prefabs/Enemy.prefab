@@ -171,6 +171,7 @@ MonoBehaviour:
   rb: {fileID: 4935405856232366236}
   animator: {fileID: 7073108123651105917}
   spriteRenderer: {fileID: 530604025557127892}
+  coinPrefab: {fileID: 7323202934041131293, guid: 268bce3528383d443bc2d72faf340500, type: 3}
 --- !u!50 &4935405856232366236
 Rigidbody2D:
   serializedVersion: 5

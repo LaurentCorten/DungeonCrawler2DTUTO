@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4573646646467445493}
   - component: {fileID: 4742781762461057088}
   - component: {fileID: 1147034761485951979}
+  - component: {fileID: 1317512664870930081}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -221,3 +222,17 @@ MonoBehaviour:
   hpPrefab: {fileID: 4995036375442689451, guid: 32d51138d5f118f488e2a256ffd3d616, type: 3}
   animator: {fileID: 7045705530547055348}
   spriteRenderer: {fileID: 4724386691309626979}
+--- !u!114 &1317512664870930081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196430965903423762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db475ee646898b74b99dc953e1da4637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  coinText: {fileID: 0}
+  currentCoins: 0
