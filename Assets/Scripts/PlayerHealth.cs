@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField]private int _currentHealth;
+    public int currentHealth;
     public int maxHealth = 3;
     public bool isAlive = true;
 
@@ -13,17 +13,17 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
-        _currentHealth = maxHealth;
+        currentHealth = maxHealth;
         UpdateHealthBarUI();
     }
     public void TakeDamage(int dmg)
     {
         if(isAlive)
         {
-            _currentHealth -= dmg;
+            currentHealth -= dmg;
             UpdateHealthBarUI();
 
-            if (_currentHealth <= 0)
+            if (currentHealth <= 0)
             {
                 animator.SetTrigger("Die");
                 isAlive = false;
@@ -38,7 +38,7 @@ public class PlayerHealth : MonoBehaviour
             Destroy(t.gameObject);
         }
 
-        for (int i = 0; i < _currentHealth; i++)
+        for (int i = 0; i < currentHealth; i++)
         {
             Instantiate(hpPrefab, healthBarUI);
         }
@@ -48,4 +48,12 @@ public class PlayerHealth : MonoBehaviour
     {
         spriteRenderer.enabled = false;
     }
+
+    public void IncreaseMaxHealth(int amt)
+    {
+        maxHealth += amt;
+        currentHealth += amt;
+        UpdateHealthBarUI();
+    }
+     
 }

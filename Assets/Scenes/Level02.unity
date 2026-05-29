@@ -3010,7 +3010,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3929803877955811829, guid: 5f04a0fc8da128f4f82096b4a8c0beeb, type: 3}
       propertyPath: levelToLoad
-      value: Level01
+      value: Shop
       objectReference: {fileID: 0}
     - target: {fileID: 9077267339167366970, guid: 5f04a0fc8da128f4f82096b4a8c0beeb, type: 3}
       propertyPath: m_Name
@@ -3363,11 +3363,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4439743443262511141, guid: 627f661aa5f58294c914d9ca0ef6bdc3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.42
+      value: -6.31
       objectReference: {fileID: 0}
     - target: {fileID: 4439743443262511141, guid: 627f661aa5f58294c914d9ca0ef6bdc3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.18
+      value: -3.17
       objectReference: {fileID: 0}
     - target: {fileID: 4439743443262511141, guid: 627f661aa5f58294c914d9ca0ef6bdc3, type: 3}
       propertyPath: m_LocalPosition.z

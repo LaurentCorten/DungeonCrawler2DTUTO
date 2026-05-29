@@ -11,9 +11,8 @@ public class LoadLevel : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
+            PlayerBase.instance.SaveData();
             StartCoroutine(LoadSceneWithFade(levelToLoad));
-            PlayerPrefs.SetInt("Money", PlayerMoney.instance.currentCoins);
-            PlayerPrefs.Save();
         }
     }
 

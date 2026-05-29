@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,28 +20,28 @@ public class PlayerMouvement : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("Awake starts!");
+        //Debug.Log("Awake starts!");
 
         _input = new InputPlayerMouvement();
-        Debug.Log("_input initialized!");
+        //Debug.Log("_input initialized!");
 
         InputListeningOn();
-        Debug.Log("Listening to Inputs!");
+        //Debug.Log("Listening to Inputs!");
 
         _input.Player.Enable();
-        Debug.Log("_input Enabled!");
+        //Debug.Log("_input Enabled!");
 
-        Debug.Log("Awake finished!");
+        //Debug.Log("Awake finished!");
     }
 
     private void Start()
     {
-        Debug.Log("Start starts!");
+        //Debug.Log("Start starts!");
 
         _transform = rb2D.GetComponent<Transform>();
-        Debug.Log("_transform got rigidboby<Transform>!");
+        //Debug.Log("_transform got rigidboby<Transform>!");
 
-        Debug.Log("Start Finished!");
+        //Debug.Log("Start Finished!");
     }
 
     void Update()
@@ -62,9 +63,20 @@ public class PlayerMouvement : MonoBehaviour
     private void OnDestroy()
     {
         InputListeningOff();
-        Debug.Log("Listening to Inputs No More!");
+        //Debug.Log("Listening to Inputs No More!");
+        _input.Player.Disable();
+        //Debug.Log("Input Player Disabled!");
     }
 
+    public void MultiplySpeed(float speedMultiplier)
+    {
+        moveSpeed *= speedMultiplier;
+    }
+    
+    public void MultiplyDmg(float dmgMultiplier)
+    {
+        damage = Mathf.CeilToInt(damage*dmgMultiplier);
+    }
     private void ApplyMove()
     {
         _transform.position += new Vector3(_movement.x,_movement.y,0) * moveSpeed;
@@ -116,46 +128,46 @@ public class PlayerMouvement : MonoBehaviour
     #region Setup input listener
     private void InputListeningOn()
     {
-        Debug.Log("Start InputSuscription");
+        //Debug.Log("Start InputSuscription");
         _input.Player.Move.performed += onMovePerformed;
         _input.Player.Move.canceled += onMoveCanceled;
         _input.Player.Attack.performed += onAttackPerformed;
-        Debug.Log("InputSuscription Finished");
+        //Debug.Log("InputSuscription Finished");
     }
     private void InputListeningOff()
     {
-        Debug.Log("Start InputUnsuscription");
+        //Debug.Log("Start InputUnsuscription");
         _input.Player.Move.performed -= onMovePerformed;
         _input.Player.Move.canceled -= onMoveCanceled;
         _input.Player.Attack.performed -= onAttackPerformed;
-        Debug.Log("InputUnsuscription Finished");
+        //Debug.Log("InputUnsuscription Finished");
     }
 
     private void onMovePerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("Start onMovePerformed");
+        //Debug.Log("Start onMovePerformed");
         if (playerHealth.isAlive)
         {
             _movement = context.ReadValue<Vector2>(); 
         }
-        Debug.Log("Stop onMovePerformed");
+        //Debug.Log("Stop onMovePerformed");
     }
 
     private void onMoveCanceled(InputAction.CallbackContext context)
     {
-        Debug.Log("Start onMoveCanceled");
+        //Debug.Log("Start onMoveCanceled");
         _movement = Vector2.zero;
-        Debug.Log("Stop onMoveCanceled");
+        //Debug.Log("Stop onMoveCanceled");
     } 
 
     private void onAttackPerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("Start onAttackPerformed");
+        //Debug.Log("Start onAttackPerformed");
         if (playerHealth.isAlive)
         {
             PerformAttack(); 
         }
-        Debug.Log("Stop onAttackPerformed");
+        //Debug.Log("Stop onAttackPerformed");
     }
 
     #endregion
